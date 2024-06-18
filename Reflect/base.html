@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //1.2.2.1 Reflect.get 和 Reflect.set
+        const obj = {
+            a: 1
+        };
+
+        // 获取对象的属性值
+        console.log(Reflect.get(obj, 'a')); // 1
+
+        // 设置对象的属性值
+        Reflect.set(obj, 'b', 2);
+        console.log(obj.b); // 2
+
+        //1.2.2.2 Reflect.deleteProperty
+        // 删除对象的属性
+Reflect.deleteProperty(obj, 'a');
+console.log(obj); // { b: 2 }
+// 1.2.2.3 Reflect.has
+// 检查对象是否有某个属性
+console.log(Reflect.has(obj, 'a')); // false
+console.log(Reflect.has(obj, 'b')); // true
+
+//1.2.2.4 Reflect.defineProperty
+const obj1 = {};
+
+// 定义对象的属性
+Reflect.defineProperty(obj1, 'a', {
+  value: 1,
+  writable: true,
+  enumerable: true,
+  configurable: true
+});
+console.log(obj1.a); // 1
+
+//1.2.2.6 Reflect.construct
+function Person(name) {
+  this.name = name;
+}
+
+// 构造实例
+const person = Reflect.construct(Person, ['John']);
+console.log(person.name); // John
+
+//1.2.2.7 Reflect.getPrototypeOf 和 Reflect.setPrototypeOf
+const obj2 = { a: 1 };
+const proto = { b: 2 };
+
+// 获取对象的原型
+console.log(Reflect.getPrototypeOf(obj2)); // {}
+
+// 设置对象的原型
+Reflect.setPrototypeOf(obj2, proto);
+console.log(Reflect.getPrototypeOf(obj2)); // { b: 2 }
+
+
+
+    </script>
+</body>
+
+</html>
