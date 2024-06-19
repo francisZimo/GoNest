@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true, // 启用装饰器
+    "module": "commonjs", // 生成代码的模板标准
+    "target": "es6", // 目标语言的版本，现在基本都是ES6
+    "noImplicitAny": true, // 不允许隐式的any类型
+    "outDir": "./dist", // 指定输出目录
+    "sourceMap": true // 是否生成目标文件的sourceMap文件
+  },
+
+}
