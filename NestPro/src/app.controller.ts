@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import e = require('express');
 
 // 控制器
 @Controller('users')
@@ -29,7 +28,7 @@ class AppController {
   // 处理带查询参数的 GET 请求
   @Get()
   findByAge(@Query('age') age: string): string {
-    return `This action returns users of age ${age}`;
+    return `111 This action returns users of age ${age}`;
   }
 
   // 处理带路径和查询参数的 GET 请求
