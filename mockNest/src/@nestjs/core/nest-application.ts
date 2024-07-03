@@ -13,14 +13,41 @@ class NestApplication {
   // 定义一个私有的模块变量
   private readonly module: any;
 
+  private readonly providers = new Map();
+
   // 构造函数，接收一个模块参数
   constructor(module: any) {
     this.module = module;
+    this.initProviders();
   }
   // 定义 use 方法，用于注册中间件
   use(middleware: (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => void) {
     this.app.use(middleware);
   }
+
+  private initProviders() {
+    const providers = Reflect.getMetadata('providers', this.module) || [];
+    for (const provider of providers) {
+      if (provider.provide && provider.useClass) {
+        this.providers.set(provider.provide, new provider.useClass());
+      } else if (provider.provide && provider.useValue) {
+        this.providers.set(provider.provide, provider.useValue);
+      } else if (provider.provide && provider.useFactory) {
+        this.providers.set(provider.provide, provider.useFactory());
+      } else {
+        this.providers.set(provider, new provider());
+      }
+    }
+  }
+
+  private resolveDependencies(Controller: any) {
+    const injectedTokens = Reflect.getMetadata('injectedTokens', Controller) || [];
+    const constructorParams = Reflect.getMetadata('design:paramtypes', Controller) || [];
+    return constructorParams.map((param: any, index: number) => {
+      return this.providers.get(injectedTokens[index] ?? param);
+    });
+  }
+
   // 定义 init 方法，初始化应用
   async init() {
     // 获取模块中的控制器元数据
@@ -30,7 +57,9 @@ class NestApplication {
     // 遍历所有控制器
     for (const Controller of controllers) {
       // 创建控制器实例
-      const controller = new Controller();
+      const dependencies = this.resolveDependencies(Controller);
+      const controller = new Controller(...dependencies);
+      // const controller = new Controller();
       // 获取控制器的路由前缀元数据，默认为 '/'
       const prefix = Reflect.getMetadata('prefix', Controller) || '/';
       // 获取控制器的原型对象
